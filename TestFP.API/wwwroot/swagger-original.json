@@ -1,0 +1,370 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Testaufgabe Ilya Kuznetsov",
+    "description" : "Create a simple C#/.NET Restful API service, that\n• reads from any URL with JSON-Data a list of product data.\nThe URL to read from is given below and contains mostly beers.\n\n• has three different routes and questions to analyse the JSON-Data given.\n\no Most expensive and cheapest beer per litre.\n\no Which beers cost exactly €17.99?\nOrder the result by price per litre (cheapest first).\n\no Which one product comes in the most bottles?\n\n• It also has one route to get the answer to all routes or questions at once.\n\n• Any result or output should be in JSON, too.",
+    "contact" : {
+      "name" : "Ilya Kuznetsov",
+      "email" : "ilya.v.kuznetsov@gmail.com"
+    },
+    "version" : "1.0"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:3000"
+  } ],
+  "tags" : [ {
+    "name" : "assortment"
+  } ],
+  "paths" : {
+    "/assortment/priceRange" : {
+      "get" : {
+        "tags" : [ "assortment" ],
+        "summary" : "get-price-range",
+        "description" : "Identifies the most expensive and cheapest beer per litre from the specified json list.\nThe response object contains an array of articles. Tagged with \"cheapest\"/\"most expensive\" as there could be multiple articles with the same price.",
+        "operationId" : "get-assortment-priceRange",
+        "parameters" : [ {
+          "name" : "url",
+          "in" : "query",
+          "description" : "URL to JSON with articles",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/apiResult"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "url is not accessible or there is no json in response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/apiResult"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/apiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/assortment/priceExactly" : {
+      "get" : {
+        "tags" : [ "assortment" ],
+        "summary" : "get-by-pricve-exactly",
+        "description" : "Which beers cost exactly €17.99?\nResponse has an array with the requested articles ordered by price per litre ",
+        "operationId" : "get-assortment-priceExactly",
+        "parameters" : [ {
+          "name" : "url",
+          "in" : "query",
+          "description" : "URL to JSON with articles",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/article"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "url is not accessible or there is no json in response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/apiResult"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/apiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/assortment/mostBottles" : {
+      "get" : {
+        "tags" : [ "assortment" ],
+        "summary" : "get-by-most-bottles",
+        "description" : "Which one product comes in the most bottles?\nResponse contains list of requested articles",
+        "operationId" : "get-assortment-mostBottles",
+        "parameters" : [ {
+          "name" : "url",
+          "in" : "query",
+          "description" : "URL to JSON with articles",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/article"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "url is not accessible or there is no json in response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/apiResult"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/apiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/assortment/allDetails" : {
+      "get" : {
+        "tags" : [ "assortment" ],
+        "summary" : "get-all-details",
+        "description" : "Combines information from the methods priceRange, priceExactly, mostBottles.\nResponse contains list of apiResult for each method.",
+        "operationId" : "get-assortment-allDetails",
+        "parameters" : [ {
+          "name" : "url",
+          "in" : "query",
+          "description" : "URL to JSON with articles",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/apiResult"
+                  },
+                  "x-content-type" : "application/json"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "url is not accessible or there is no json in response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/apiResult"
+                  },
+                  "x-content-type" : "application/json"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/apiResult"
+                  },
+                  "x-content-type" : "application/json"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "article" : {
+        "title" : "article",
+        "required" : [ "id", "price", "pricePerUnitText", "shortDescription" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "Unique identifier for the given user."
+          },
+          "shortDescription" : {
+            "type" : "string"
+          },
+          "price" : {
+            "type" : "string"
+          },
+          "unit" : {
+            "type" : "string"
+          },
+          "pricePerUnitText" : {
+            "type" : "string"
+          },
+          "image" : {
+            "type" : "string"
+          },
+          "tag" : {
+            "type" : "string"
+          },
+          "product" : {
+            "$ref" : "#/components/schemas/product"
+          }
+        },
+        "description" : "",
+        "example" : {
+          "image" : "image",
+          "unit" : "unit",
+          "product" : {
+            "brandName" : "brandName",
+            "name" : "name",
+            "id" : 6,
+            "descriptionText" : "descriptionText"
+          },
+          "price" : "price",
+          "pricePerUnitText" : "pricePerUnitText",
+          "id" : 0,
+          "shortDescription" : "shortDescription",
+          "tag" : "tag"
+        }
+      },
+      "apiResult" : {
+        "title" : "apiResult",
+        "required" : [ "success" ],
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "boolean"
+          },
+          "method" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "result" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/article"
+            }
+          }
+        },
+        "description" : "Response of API methods",
+        "example" : {
+          "result" : [ {
+            "image" : "image",
+            "unit" : "unit",
+            "product" : {
+              "brandName" : "brandName",
+              "name" : "name",
+              "id" : 6,
+              "descriptionText" : "descriptionText"
+            },
+            "price" : "price",
+            "pricePerUnitText" : "pricePerUnitText",
+            "id" : 0,
+            "shortDescription" : "shortDescription",
+            "tag" : "tag"
+          }, {
+            "image" : "image",
+            "unit" : "unit",
+            "product" : {
+              "brandName" : "brandName",
+              "name" : "name",
+              "id" : 6,
+              "descriptionText" : "descriptionText"
+            },
+            "price" : "price",
+            "pricePerUnitText" : "pricePerUnitText",
+            "id" : 0,
+            "shortDescription" : "shortDescription",
+            "tag" : "tag"
+          } ],
+          "method" : "method",
+          "success" : true,
+          "message" : "message"
+        }
+      },
+      "product" : {
+        "title" : "product",
+        "required" : [ "brandName", "id", "name" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer"
+          },
+          "brandName" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "descriptionText" : {
+            "type" : "string"
+          }
+        },
+        "example" : {
+          "brandName" : "brandName",
+          "name" : "name",
+          "id" : 6,
+          "descriptionText" : "descriptionText"
+        }
+      }
+    }
+  }
+}
